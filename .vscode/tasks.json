@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "tsc -p ${workspaceFolder}\\tsconfig.build.json", // "tsc; rollup -c
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "rollup",
+            "type": "shell",
+            "command": "rollup -c",
+            "dependsOn": [
+                "build",
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "windows": {
+                "command": "Remove-Item",
+                "args": [
+                    "-path",
+                    "public/js/*,",
+                    "js/*",
+                    "-recurse"
+                ]
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+              },
+            "problemMatcher": []
+        }
+    ]
+  }

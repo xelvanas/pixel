@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Microsoft Edge and open the Edge DevTools",
+            "preLaunchTask": "rollup",
+            "request": "launch",
+            "type": "edge",
+            "file": "${workspaceFolder}/public/index.htm",
+            "webRoot": "${workspaceFolder}"
+        }
+        
+    ]
+}
