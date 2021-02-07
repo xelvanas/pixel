@@ -1,5 +1,5 @@
 import { Color } from "./color";
-import { Vector2 } from "./math/vector2"
+import { Vector2d } from "./math/vector2d"
 
 export interface ISurface {
     width:number;
@@ -8,7 +8,7 @@ export interface ISurface {
     SetPixel(x:number, y:number, color:Color): void;
     GetPixel(x: number, y: number): Color;
     Fill(color: Color): void;
-    DrawLine(p0:Vector2, p1:Vector2, color:Color): void;
+    DrawLine(p0:Vector2d, p1:Vector2d, color:Color): void;
 }
 
 
@@ -37,10 +37,10 @@ export class Surface implements ISurface {
 
     SetPixel(x: number, y: number, color: Color): void {
         var i = (x + y * this.width) * 4;
-        this._imgData.data[i+0] = color.R;
-        this._imgData.data[i+1] = color.G;
-        this._imgData.data[i+2] = color.B;
-        this._imgData.data[i+3] = color.A;
+        this._imgData.data[i+0] = color.r;
+        this._imgData.data[i+1] = color.g;
+        this._imgData.data[i+2] = color.b;
+        this._imgData.data[i+3] = color.a;
     }
 
     GetPixel(x: number, y: number): Color {
@@ -56,46 +56,46 @@ export class Surface implements ISurface {
     Fill(color: Color): void {
         let buffer = new Uint32Array(this._imgData.data.buffer);
         let size = this.width * this.height;
-        let val  = color.Value;
+        let val  = color.value;
         for(let i = 0; i < size; ++ i) {
             buffer[i] = val;
         }
     }
 
-    DrawLine(p0:Vector2, p1:Vector2, color:Color): void {
+    DrawLine(p0:Vector2d, p1:Vector2d, color:Color): void {
         let diff  = p1.Subtract(p0);
-        let xinc  = diff.X >= 0 ? 1 : -1;
-        let yinc  = diff.Y >= 0 ? 1 : -1;;
+        let xinc  = diff.x >= 0 ? 1 : -1;
+        let yinc  = diff.y >= 0 ? 1 : -1;;
         let error = 0;
         let index = 0;
-        diff.X = Math.abs(diff.X);
-        diff.Y = Math.abs(diff.Y);
+        diff.x = Math.abs(diff.x);
+        diff.y = Math.abs(diff.y);
 
 
-        if(diff.X >= diff.Y) {
+        if(diff.x >= diff.y) {
             // x-dominate case
-            error = Math.floor(diff.Y * (diff.X/diff.Y) / 2);
-            for(let i = p0.X; i < diff.X; ++i) {
-                if(error > diff.X) {
-                    error -= diff.X;
-                    p0.Y += yinc;
+            error = Math.floor(diff.y * (diff.x/diff.y) / 2);
+            for(let i = p0.x; i < diff.x; ++i) {
+                if(error > diff.x) {
+                    error -= diff.x;
+                    p0.y += yinc;
                 }
-                this.SetPixel(p0.X, p0.Y, color);
-                p0.X += xinc;
-                error += diff.Y;
+                this.SetPixel(p0.x, p0.y, color);
+                p0.x += xinc;
+                error += diff.y;
             }
         } else {
             // y-dominate case
-            error = Math.floor(diff.X * (diff.Y/diff.X) / 2);
-            for(let i = p0.Y; i < diff.Y; ++i) {
-                if(error > diff.Y) {
-                    error -= diff.Y;
-                    p0.X += xinc;
+            error = Math.floor(diff.x * (diff.y/diff.x) / 2);
+            for(let i = p0.y; i < diff.y; ++i) {
+                if(error > diff.y) {
+                    error -= diff.y;
+                    p0.x += xinc;
                 }
 
-                this.SetPixel(p0.X, p0.Y, color);
-                p0.Y += yinc;
-                error += diff.X;
+                this.SetPixel(p0.x, p0.y, color);
+                p0.y += yinc;
+                error += diff.x;
             }
         }        
     }

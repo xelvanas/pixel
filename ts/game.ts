@@ -1,5 +1,6 @@
 import { Color } from "./color";
-import { Vector2 } from "./math/vector2";
+import { Line2d } from "./math/line2d";
+import { Vector2d } from "./math/vector2d";
 import { ISurface, Surface } from "./surface"
 
 export class Game {
@@ -65,31 +66,58 @@ export class Game {
 
     }
 
-    protected randomVector2(): Vector2 {
-        return new Vector2(
+    protected randomVector2(): Vector2d {
+        return new Vector2d(
             Math.floor( Math.random() * this._surface.width ),
             Math.floor( Math.random() * this._surface.height )
         );
     }
 
     protected Draw(): void {
-        this._color.R = 0xC4;
-        this._color.G = 0xFF;
-        this._color.B = 0x0E;
-        this._color.A = 255;
-        //this._surface.Fill(this._color);
+        this._color.r = 0;
+        this._color.g = 0;
+        this._color.b = 0;
+        this._color.a = 255;
+        this._surface.Fill(this._color);
         let color = new Color();
         color.Random();
+        let line0 = new Line2d(0, 0, 300, 400);
+        let line1 = new Line2d(83, 13, 200, 500);
+
+        color.SetRGBA(255, 0, 0);
+        this._surface.DrawLine(
+            line0.p0,
+            line0.p1,
+            color);
+
+        //color.Random();
+        color.SetRGBA(255, 255, 0);
+        this._surface.DrawLine(
+            line1.p0,
+            line1.p1,
+            color);
+
+        let [met, pt] = line0.Intersect(line1);
+
+        color.Random();
+        if(met) {
+            this._surface.SetPixel(
+                Math.floor(pt.x),
+                Math.floor(pt.y),
+                color
+            );
+        }
+
         /*
         this._back_context.fillStyle = this._color.HtmlColor;
         this._back_context.fillRect(0,0,800,600);
         this._back_context.putImageData(this._surface.imageData,0,0);
         this._front_context.drawImage(this._back_canvas, 0, 0);
         */
-        this._surface.DrawLine(
-            this.randomVector2(),
-            this.randomVector2(),
-            color);
+        // this._surface.DrawLine(
+        //     this.randomVector2(),
+        //     this.randomVector2(),
+        //     color);
         this._front_context.putImageData(this._surface.imageData,0,0);
     }
 }

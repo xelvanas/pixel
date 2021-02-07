@@ -1,4 +1,4 @@
-export class Vector2 {
+export class Vector2d {
     private _values = new Float32Array(2);
 
     constructor();
@@ -8,24 +8,24 @@ export class Vector2 {
         this._values[1] = y || 0;
     }
     
-    get X(): number {
+    get x(): number {
         return this._values[0];
     }
 
-    set X(value: number) {
+    set x(value: number) {
         this._values[0] = value;
     }
 
-    get Y(): number {
+    get y(): number {
         return this._values[1];
     }
 
-    set Y(value: number) {
+    set y(value: number) {
         this._values[1] = value;
     }
 
-    Copy(): Vector2 {
-        return new Vector2(this.X, this.Y);
+    Copy(): Vector2d {
+        return new Vector2d(this.x, this.y);
     }
 
     Reset(): void {
@@ -37,34 +37,34 @@ export class Vector2 {
         return [this._values[0], this._values[1]];
     }
 
-    Negate(): Vector2 {
-        return new Vector2(-this._values[0], -this._values[1])
+    Negate(): Vector2d {
+        return new Vector2d(-this._values[0], -this._values[1])
     }
 
-    Equals(vector: Vector2): boolean {
-        if (Math.abs(this.X - vector.X) > Number.EPSILON) {
+    Equals(vector: Vector2d): boolean {
+        if (Math.abs(this.x - vector.x) > Number.EPSILON) {
             return false
         }
 
-        if (Math.abs(this.Y - vector.Y) > Number.EPSILON) {
+        if (Math.abs(this.y - vector.y) > Number.EPSILON) {
             return false
         }
         return true
     }
 
-    Add(vector: Vector2): Vector2 {
-        return new Vector2(this.X + vector.X, this.Y + vector.Y);
+    Add(vector: Vector2d): Vector2d {
+        return new Vector2d(this.x + vector.x, this.y + vector.y);
     }
 
-    Subtract(vector: Vector2): Vector2 {
-        return new Vector2(this.X - vector.X, this.Y - vector.Y);
+    Subtract(vector: Vector2d): Vector2d {
+        return new Vector2d(this.x - vector.x, this.y - vector.y);
     }
 
-    Scale(value: number): Vector2 {
-        return new Vector2(this.X * value, this.Y * value);
+    Scale(value: number): Vector2d {
+        return new Vector2d(this.x * value, this.y * value);
     }
 
-    Normalize(): Vector2 {
+    Normalize(): Vector2d {
         let Length = this.Length;
         
         if (Length === 1) {
@@ -72,10 +72,10 @@ export class Vector2 {
         }
 
         if (Length === 0) {
-            return new Vector2();
+            return new Vector2d();
         }
 
-        return new Vector2(this.X / Length, this.Y / Length);
+        return new Vector2d(this.x / Length, this.y / Length);
     }
 
     get Length(): number {
@@ -86,19 +86,19 @@ export class Vector2 {
         return this.Dot(this);
     }
 
-    Dot(vector: Vector2): number {
-        return this.X * vector.X + this.Y * vector.Y;
+    Dot(vector: Vector2d): number {
+        return this.x * vector.x + this.y * vector.y;
     }
 
-    Cross(vector: Vector2): number {
-        return this.X * vector.Y - vector.X * this.Y;
+    Cross(vector: Vector2d): number {
+        return this.x * vector.y - vector.x * this.y;
     }
 
-    Distance(vector: Vector2): number {
+    Distance(vector: Vector2d): number {
         return Math.sqrt(this.SquaredDistance(vector));
     }
 
-    SquaredDistance(vector: Vector2): number {
+    SquaredDistance(vector: Vector2d): number {
         let vec = this.Subtract(vector);
         return vec.SquaredLength
     }

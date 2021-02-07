@@ -6,53 +6,53 @@ export class Color {
      * provide a converter to support parameters like "#FFF", '0xABC', etc
      */
     public constructor(color:number = 0) {
-        this.Value = color;
+        this.value = color;
     }
 
-    public get R() {
+    public get r() {
         return this._data[0];
     }
 
-    public set R(value: number) {
+    public set r(value: number) {
         this._data[0] = value;
     }
 
-    public get G() {
+    public get g() {
         return this._data[1];
     }
 
-    public set G(value: number) {
+    public set g(value: number) {
         this._data[1] = value;
     }
 
-    public get B() {
+    public get b() {
         return this._data[2];
     }
 
-    public set B(value: number) {
+    public set b(value: number) {
         this._data[2] = value;
     }
 
-    public get A() {
+    public get a() {
         return this._data[3];
     }
 
-    public set A(value: number) {
+    public set a(value: number) {
         this._data[3] = value;
     }
 
-    public get Value() {
+    public get value() {
         let v = new Uint32Array(this._data.buffer);
         return v[0];
     }
 
-    public set Value(value: number) {
+    public set value(value: number) {
         let v = new Uint32Array(this._data.buffer);
         v[0] = value;
     }
 
     public get Hex() {
-        return this.Value
+        return this.value
         .toString(16)
         .toUpperCase()
         .padStart(8,'0');
@@ -60,23 +60,23 @@ export class Color {
 
     public get HtmlColor() {
         return "#" + 
-        this.R.toString(16).padStart(2, '0') +
-        this.G.toString(16).padStart(2, '0') +
-        this.B.toString(16).padStart(2, '0');
+        this.r.toString(16).padStart(2, '0') +
+        this.g.toString(16).padStart(2, '0') +
+        this.b.toString(16).padStart(2, '0');
     }
 
     public Random(): void {
-        this.R = Math.floor(Math.random() * 255);
-        this.G = Math.floor(Math.random() * 255);
-        this.B = Math.floor(Math.random() * 255);
-        this.A = 255;
+        this.r = Math.floor(Math.random() * 255);
+        this.g = Math.floor(Math.random() * 255);
+        this.b = Math.floor(Math.random() * 255);
+        this.a = 255;
     }
 
     public SetRGBA(r: number, g: number, b: number, a:number = 255) {
-        this.R = r;
-        this.G = g;
-        this.B = b;
-        this.A = a;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     public static Create(
