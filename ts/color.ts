@@ -1,7 +1,12 @@
 export class Color {
     private _data = new Uint8Array(4);
 
-    public constructor() {
+    /*
+     * converting string to number is not the job of a 'color'.,
+     * provide a converter to support parameters like "#FFF", '0xABC', etc
+     */
+    public constructor(color:number = 0) {
+        this.Value = color;
     }
 
     public get R() {
@@ -36,21 +41,28 @@ export class Color {
         this._data[3] = value;
     }
 
-    public get Decimal() {
+    public get Value() {
         let v = new Uint32Array(this._data.buffer);
         return v[0];
     }
 
-    public set Decimal(value: number) {
+    public set Value(value: number) {
         let v = new Uint32Array(this._data.buffer);
         v[0] = value;
     }
 
     public get Hex() {
-        return this.Decimal
+        return this.Value
         .toString(16)
         .toUpperCase()
         .padStart(8,'0');
+    }
+
+    public get HtmlColor() {
+        return "#" + 
+        this.R.toString(16).padStart(2, '0') +
+        this.G.toString(16).padStart(2, '0') +
+        this.B.toString(16).padStart(2, '0');
     }
 
     public Random(): void {
@@ -60,12 +72,22 @@ export class Color {
         this.A = 255;
     }
 
-    public SetRGB(r: number, g: number, b: number) {
+    public SetRGBA(r: number, g: number, b: number, a:number = 255) {
         this.R = r;
         this.G = g;
         this.B = b;
-        this.A = 0xFF;
+        this.A = a;
     }
+
+    public static Create(
+        r: number,
+        g: number,
+        b: number,
+        a:number = 255): Color {
+            let color = new Color();
+            color.SetRGBA(r, g, b, a);
+            return color;
+        }
 
     // private checkValue(val: number): number {
     //     if (val == undefined ||
