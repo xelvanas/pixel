@@ -1,19 +1,19 @@
-import { Vector2d } from "./vector2d"
-import { InBetween } from "./misc"
+import { vector2d } from "./vector2d"
+import { inBetween } from "./misc"
 
-export class Line2d {
+export class line2d {
     private _values = new Float32Array(4);
 
     public constructor();
-    public constructor(v0:Vector2d, v1:Vector2d);
+    public constructor(v0:vector2d, v1:vector2d);
     public constructor(v0:number, v1:number, v2:number, v3:number);
 
     public constructor(
-        v0?:number | Vector2d,
-        v1?:number | Vector2d,
+        v0?:number | vector2d,
+        v1?:number | vector2d,
         v2?:number,
         v3?:number) {
-        if(v0 instanceof Vector2d && v1 instanceof Vector2d) {
+        if(v0 instanceof vector2d && v1 instanceof vector2d) {
             this._values[0] = v0.x;
             this._values[1] = v0.y;
 
@@ -61,19 +61,19 @@ export class Line2d {
     }
 
     public get p0() {
-        return new Vector2d(this.x0, this.y0); 
+        return new vector2d(this.x0, this.y0); 
     }
 
-    public set p0(p: Vector2d) {
+    public set p0(p: vector2d) {
         this.x0 = p.x;
         this.y0 = p.y;
     }
 
     public get p1() {
-        return new Vector2d(this.x1, this.y1); 
+        return new vector2d(this.x1, this.y1); 
     }
 
-    public set p1(p: Vector2d) {
+    public set p1(p: vector2d) {
         this.x1 = p.x;
         this.y1 = p.y;
     }
@@ -98,12 +98,12 @@ export class Line2d {
     }
 
     // test if two lines have an intersection point
-    public Intersect(line: Line2d): [boolean, Vector2d] {
+    public intersect(line: line2d): [boolean, vector2d] {
         return this.intersectV1(line);
     }
 
     // method 1
-    protected intersectV1(line: Line2d): [boolean, Vector2d] {
+    protected intersectV1(line: line2d): [boolean, vector2d] {
         /*
          * use equation to solve this problem
          * suppose we have ln0, ln1.
@@ -146,28 +146,45 @@ export class Line2d {
          // x = (m0*x0 - m1*x1 + y1 - y0)/(m0-m1)
          
          // special cases where there's at least one vertical line
+         let vct   = new vector2d();
+             vct.x = Number.NaN;
+             vct.y = Number.NaN;
         if(this.slop == Number.NaN || line.slop == Number.NaN) {
             if(this.slop != Number.NaN) {
-                 return Line2d.intersectNV(this, line);
+                 return line2d.intersectNV(this, line);
             }
 
             if(line.slop != Number.NaN) {
-               return Line2d.intersectNV(line, this);
+               return line2d.intersectNV(line, this);
             }
 
             // two vertical lines
-            if(InBetween(this.y0, line.y0, line.y1) ||
-                InBetween(this.y1, line.y0, line.y1)) {
-
-               let vct = new Vector2d();
-               vct.x = Number.NaN;
-               vct.y = Number.NaN;
+            if(inBetween(this.y0, line.y0, line.y1) ||
+                inBetween(this.y1, line.y0, line.y1)) {
                // infinite intersection point
                return [true, vct];
             }
             // no intersection point at all
             return [false, null];
         }
+
+        if((this.slop - line.slop) < 0x0001) {
+            // might be parallel lines
+            // how do I know if two parallel lines are the same
+            // we can use y-intercept form to detect if they have same
+            // intercept.
+            // 
+            // from y = m0(x - x0) + y0 to y = m*x + b
+            // m*x - m*x0 + y0 = m*x + b
+            // b = y0 - m*x0
+            let b0 = this.y0 - this.slop*this.x0;
+            let b1 = line.y0 - line.slop*line.x0;
+
+            // they have infinite intersection points 
+            // only if b0 == b1 && they have shared 'x' parts
+            return [b0 == b1 && inBetween(line.x0, this.x0, this.x1), vct];
+        }
+
         //  x = (m0*x0 - m1*x1 + y1 - y0)/(m0-m1)
         let x = (this.slop * this.x0 - 
                  line.slop*line.x0    -
@@ -175,23 +192,23 @@ export class Line2d {
         //  y = m0(x - x0) + y0
         let y = this.slop * (x - this.x0) + this.y0;
 
-        if( InBetween(x, this.x0, this.x1) ) {
-            return [true, new Vector2d(x, y)];
+        if( inBetween(x, this.x0, this.x1) ) {
+            return [true, new vector2d(x, y)];
         } else {
             // they how intersection point, but not here.
-            return [false, new Vector2d(x, y)];
+            return [false, new vector2d(x, y)];
         }
     }
 
     // one is normal line, other is vertical line
-    protected static intersectNV(lnn:Line2d, lnv:Line2d): [boolean, Vector2d] {
+    protected static intersectNV(lnn:line2d, lnv:line2d): [boolean, vector2d] { 
         let xmin = Math.min(lnn.x0, lnn.x1);
         let xmax = Math.max(lnn.x0, lnn.x1);
 
-        if(InBetween(lnv.x0, lnn.x0, lnn.x1) ) {
+        if(inBetween(lnv.x0, lnn.x0, lnn.x1) ) {
             let y0 = lnv.x0 * lnn.slop;
-            if(InBetween(y0, lnn.y0, lnn.y1)) {
-                return [true, new Vector2d(lnv.x0, y0)];
+            if(inBetween(y0, lnn.y0, lnn.y1)) {
+                return [true, new vector2d(lnv.x0, y0)];
             }
         }
         // no intersection

@@ -72,7 +72,7 @@ export class Color {
         this.a = 255;
     }
 
-    public SetRGBA(r: number, g: number, b: number, a:number = 255) {
+    public setRGBA(r: number, g: number, b: number, a:number = 255) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -85,7 +85,7 @@ export class Color {
         b: number,
         a:number = 255): Color {
             let color = new Color();
-            color.SetRGBA(r, g, b, a);
+            color.setRGBA(r, g, b, a);
             return color;
         }
 

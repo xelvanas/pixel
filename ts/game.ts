@@ -1,6 +1,6 @@
 import { Color } from "./color";
-import { Line2d } from "./math/line2d";
-import { Vector2d } from "./math/vector2d";
+import { Line2D } from "./math/line2d";
+import { Vector2D } from "./math/vector2d";
 import { ISurface, Surface } from "./surface"
 
 export class Game {
@@ -56,42 +56,42 @@ export class Game {
         this._initialized = this._surface?.imageData != null;
     }
 
-    public Run() {
-        this.Update();
-        this.Draw();
-        window.requestAnimationFrame(() => this.Run())
+    public run() {
+        this.update();
+        this.draw();
+        window.requestAnimationFrame(() => this.run())
     }
 
-    protected Update(): void {
+    protected update(): void {
 
     }
 
-    protected randomVector2(): Vector2d {
-        return new Vector2d(
+    protected randomVector2(): Vector2D {
+        return new Vector2D(
             Math.floor( Math.random() * this._surface.width ),
             Math.floor( Math.random() * this._surface.height )
         );
     }
 
-    protected Draw(): void {
+    protected draw(): void {
         this._color.r = 0;
         this._color.g = 0;
         this._color.b = 0;
         this._color.a = 255;
         this._surface.Fill(this._color);
         let color = new Color();
-        color.Random();
-        let line0 = new Line2d(0, 0, 300, 400);
-        let line1 = new Line2d(83, 13, 200, 500);
+        color.random();
+        let line0 = new Line2D(0, 0, 300, 400);
+        let line1 = new Line2D(83, 13, 200, 500);
 
-        color.SetRGBA(255, 0, 0);
+        color.setRGBA(255, 0, 0);
         this._surface.DrawLine(
             line0.p0,
             line0.p1,
             color);
 
         //color.Random();
-        color.SetRGBA(255, 255, 0);
+        color.setRGBA(255, 255, 0);
         this._surface.DrawLine(
             line1.p0,
             line1.p1,
@@ -99,7 +99,7 @@ export class Game {
 
         let [met, pt] = line0.Intersect(line1);
 
-        color.Random();
+        color.random();
         if(met) {
             this._surface.SetPixel(
                 Math.floor(pt.x),

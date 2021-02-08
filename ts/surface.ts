@@ -1,14 +1,14 @@
 import { Color } from "./color";
-import { Vector2d } from "./math/vector2d"
+import { Vector2D } from "./math/vector2d"
 
 export interface ISurface {
     width:number;
     height:number;
     imageData:ImageData;
-    SetPixel(x:number, y:number, color:Color): void;
-    GetPixel(x: number, y: number): Color;
-    Fill(color: Color): void;
-    DrawLine(p0:Vector2d, p1:Vector2d, color:Color): void;
+    setPixel(x:number, y:number, color:Color): void;
+    getPixel(x: number, y: number): Color;
+    fill(color: Color): void;
+    drawLine(p0:Vector2D, p1:Vector2D, color:Color): void;
 }
 
 
@@ -35,7 +35,7 @@ export class Surface implements ISurface {
         return this._imgData;
     }
 
-    SetPixel(x: number, y: number, color: Color): void {
+    setPixel(x: number, y: number, color: Color): void {
         var i = (x + y * this.width) * 4;
         this._imgData.data[i+0] = color.r;
         this._imgData.data[i+1] = color.g;
@@ -43,7 +43,7 @@ export class Surface implements ISurface {
         this._imgData.data[i+3] = color.a;
     }
 
-    GetPixel(x: number, y: number): Color {
+    getPixel(x: number, y: number): Color {
         var i = (x + y * this.width) * 4;
         return Color.Create(
             this._imgData.data[i+0],
@@ -53,7 +53,7 @@ export class Surface implements ISurface {
         );
     }
 
-    Fill(color: Color): void {
+    fill(color: Color): void {
         let buffer = new Uint32Array(this._imgData.data.buffer);
         let size = this.width * this.height;
         let val  = color.value;
@@ -62,7 +62,7 @@ export class Surface implements ISurface {
         }
     }
 
-    DrawLine(p0:Vector2d, p1:Vector2d, color:Color): void {
+    drawLine(p0:Vector2D, p1:Vector2D, color:Color): void {
         let diff  = p1.Subtract(p0);
         let xinc  = diff.x >= 0 ? 1 : -1;
         let yinc  = diff.y >= 0 ? 1 : -1;;
@@ -80,7 +80,7 @@ export class Surface implements ISurface {
                     error -= diff.x;
                     p0.y += yinc;
                 }
-                this.SetPixel(p0.x, p0.y, color);
+                this.setPixel(p0.x, p0.y, color);
                 p0.x += xinc;
                 error += diff.y;
             }
@@ -93,7 +93,7 @@ export class Surface implements ISurface {
                     p0.x += xinc;
                 }
 
-                this.SetPixel(p0.x, p0.y, color);
+                this.setPixel(p0.x, p0.y, color);
                 p0.y += yinc;
                 error += diff.x;
             }

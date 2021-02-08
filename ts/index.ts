@@ -1,7 +1,7 @@
 import { Game } from "./game"
 
-export function Run()
+export function run()
 {
     let game = new Game("xcanvas");
-    game.Run();
+    game.run();
 }

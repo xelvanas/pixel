@@ -1,4 +1,4 @@
-export function InBetween(v:number, l:number, r:number) {
+export function inBetween(v:number, l:number, r:number) {
     if(l > r) {
         let t = l;
         l = r;
