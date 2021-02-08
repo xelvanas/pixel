@@ -65,7 +65,7 @@ export class Color {
         this.b.toString(16).padStart(2, '0');
     }
 
-    public Random(): void {
+    public random(): void {
         this.r = Math.floor(Math.random() * 255);
         this.g = Math.floor(Math.random() * 255);
         this.b = Math.floor(Math.random() * 255);

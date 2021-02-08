@@ -1,6 +1,6 @@
 import { Color } from "./color";
-import { Line2D } from "./math/line2d";
-import { Vector2D } from "./math/vector2d";
+import { line2d } from "./math/line2d";
+import { vector2d } from "./math/vector2d";
 import { ISurface, Surface } from "./surface"
 
 export class Game {
@@ -66,8 +66,8 @@ export class Game {
 
     }
 
-    protected randomVector2(): Vector2D {
-        return new Vector2D(
+    protected randomVector2(): vector2d {
+        return new vector2d(
             Math.floor( Math.random() * this._surface.width ),
             Math.floor( Math.random() * this._surface.height )
         );
@@ -78,30 +78,30 @@ export class Game {
         this._color.g = 0;
         this._color.b = 0;
         this._color.a = 255;
-        this._surface.Fill(this._color);
+        this._surface.fill(this._color);
         let color = new Color();
         color.random();
-        let line0 = new Line2D(0, 0, 300, 400);
-        let line1 = new Line2D(83, 13, 200, 500);
+        let line0 = new line2d(0, 0, 300, 400);
+        let line1 = new line2d(83, 13, 200, 500);
 
         color.setRGBA(255, 0, 0);
-        this._surface.DrawLine(
+        this._surface.drawLine(
             line0.p0,
             line0.p1,
             color);
 
         //color.Random();
         color.setRGBA(255, 255, 0);
-        this._surface.DrawLine(
+        this._surface.drawLine(
             line1.p0,
             line1.p1,
             color);
 
-        let [met, pt] = line0.Intersect(line1);
+        let [met, pt] = line0.intersect(line1);
 
         color.random();
         if(met) {
-            this._surface.SetPixel(
+            this._surface.setPixel(
                 Math.floor(pt.x),
                 Math.floor(pt.y),
                 color

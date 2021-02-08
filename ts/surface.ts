@@ -1,5 +1,5 @@
 import { Color } from "./color";
-import { Vector2D } from "./math/vector2d"
+import { vector2d } from "./math/vector2d"
 
 export interface ISurface {
     width:number;
@@ -8,7 +8,7 @@ export interface ISurface {
     setPixel(x:number, y:number, color:Color): void;
     getPixel(x: number, y: number): Color;
     fill(color: Color): void;
-    drawLine(p0:Vector2D, p1:Vector2D, color:Color): void;
+    drawLine(p0:vector2d, p1:vector2d, color:Color): void;
 }
 
 
@@ -62,8 +62,8 @@ export class Surface implements ISurface {
         }
     }
 
-    drawLine(p0:Vector2D, p1:Vector2D, color:Color): void {
-        let diff  = p1.Subtract(p0);
+    drawLine(p0:vector2d, p1:vector2d, color:Color): void {
+        let diff  = p1.sub(p0);
         let xinc  = diff.x >= 0 ? 1 : -1;
         let yinc  = diff.y >= 0 ? 1 : -1;;
         let error = 0;
