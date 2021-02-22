@@ -1,12 +1,12 @@
-export class Color {
+export class color {
     private _data = new Uint8Array(4);
 
     /*
      * converting string to number is not the job of a 'color'.,
      * provide a converter to support parameters like "#FFF", '0xABC', etc
      */
-    public constructor(color:number = 0) {
-        this.value = color;
+    public constructor(c:number = 0) {
+        this.value = c;
     }
 
     public get r() {
@@ -51,14 +51,14 @@ export class Color {
         v[0] = value;
     }
 
-    public get Hex() {
+    public get hex() {
         return this.value
         .toString(16)
         .toUpperCase()
         .padStart(8,'0');
     }
 
-    public get HtmlColor() {
+    public get htmlColor() {
         return "#" + 
         this.r.toString(16).padStart(2, '0') +
         this.g.toString(16).padStart(2, '0') +
@@ -79,14 +79,14 @@ export class Color {
         this.a = a;
     }
 
-    public static Create(
+    public static create(
         r: number,
         g: number,
         b: number,
-        a:number = 255): Color {
-            let color = new Color();
-            color.setRGBA(r, g, b, a);
-            return color;
+        a:number = 255): color {
+            let c = new color();
+            c.setRGBA(r, g, b, a);
+            return c;
         }
 
     // private checkValue(val: number): number {

@@ -93,9 +93,11 @@ export class matrix3d {
     }
 
     toArray(): number[] {
-        return [this.m11, this.m12, this.m13,
-        this.m21, this.m22, this.m23,
-        this.m31, this.m32, this.m33];
+        return [
+            this.m11, this.m12, this.m13,
+            this.m21, this.m22, this.m23,
+            this.m31, this.m32, this.m33
+        ];
     }
 
     setRow(index: number, array: number[]) {

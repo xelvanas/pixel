@@ -4,9 +4,9 @@ export class vector3 {
     constructor();
     constructor(x: number, y: number, z: number);
     constructor(x?: number, y?: number, z?: number) {
-        this._values[0] = x || 0;
-        this._values[1] = y || 0;
-        this._values[2] = z || 0;
+        this._values[0] = x;
+        this._values[1] = y;
+        this._values[2] = z;
     }
 
     get x(): number {

@@ -1,14 +1,14 @@
-import { Color } from "./color";
+import { color } from "./color";
 import { vector2d } from "./math/vector2d"
 
 export interface ISurface {
     width:number;
     height:number;
     imageData:ImageData;
-    setPixel(x:number, y:number, color:Color): void;
-    getPixel(x: number, y: number): Color;
-    fill(color: Color): void;
-    drawLine(p0:vector2d, p1:vector2d, color:Color): void;
+    setPixel(x:number, y:number, color:color): void;
+    getPixel(x: number, y: number): color;
+    fill(color: color): void;
+    drawLine(p0:vector2d, p1:vector2d, color:color): void;
 }
 
 
@@ -35,7 +35,7 @@ export class Surface implements ISurface {
         return this._imgData;
     }
 
-    setPixel(x: number, y: number, color: Color): void {
+    setPixel(x: number, y: number, color: color): void {
         var i = (x + y * this.width) * 4;
         this._imgData.data[i+0] = color.r;
         this._imgData.data[i+1] = color.g;
@@ -43,9 +43,9 @@ export class Surface implements ISurface {
         this._imgData.data[i+3] = color.a;
     }
 
-    getPixel(x: number, y: number): Color {
+    getPixel(x: number, y: number): color {
         var i = (x + y * this.width) * 4;
-        return Color.Create(
+        return color.create(
             this._imgData.data[i+0],
             this._imgData.data[i+0],
             this._imgData.data[i+0],
@@ -53,7 +53,7 @@ export class Surface implements ISurface {
         );
     }
 
-    fill(color: Color): void {
+    fill(color: color): void {
         let buffer = new Uint32Array(this._imgData.data.buffer);
         let size = this.width * this.height;
         let val  = color.value;
@@ -62,7 +62,7 @@ export class Surface implements ISurface {
         }
     }
 
-    drawLine(p0:vector2d, p1:vector2d, color:Color): void {
+    drawLine(p0:vector2d, p1:vector2d, color:color): void {
         let diff  = p1.sub(p0);
         let xinc  = diff.x >= 0 ? 1 : -1;
         let yinc  = diff.y >= 0 ? 1 : -1;;
@@ -74,8 +74,9 @@ export class Surface implements ISurface {
 
         if(diff.x >= diff.y) {
             // x-dominate case
-            error = Math.floor(diff.y * (diff.x/diff.y) / 2);
-            for(let i = p0.x; i < diff.x; ++i) {
+            //error = Math.floor(diff.y * (diff.x/diff.y) / 2);
+            error = Math.floor(diff.y / 2);
+            for(let i = 0; i < diff.x; ++i) {
                 if(error > diff.x) {
                     error -= diff.x;
                     p0.y += yinc;
@@ -86,8 +87,9 @@ export class Surface implements ISurface {
             }
         } else {
             // y-dominate case
-            error = Math.floor(diff.x * (diff.y/diff.x) / 2);
-            for(let i = p0.y; i < diff.y; ++i) {
+            // error = Math.floor(diff.x * (diff.y/diff.x) / 2);
+            error = Math.floor(diff.x / 2);
+            for(let i = 0; i < diff.y; ++i) {
                 if(error > diff.y) {
                     error -= diff.y;
                     p0.x += xinc;

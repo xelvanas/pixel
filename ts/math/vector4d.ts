@@ -4,10 +4,10 @@ export class vector4 {
     constructor();
     constructor( x: number, y: number, z: number, w: number);
     constructor( x?: number, y?: number, z?: number, w?: number) {
-        this._values[0] = x || 0;
-        this._values[1] = y || 0;
-        this._values[2] = z || 0;
-        this._values[3] = w || 0;
+        this._values[0] = x;
+        this._values[1] = y;
+        this._values[2] = z;
+        this._values[3] = w;
     }
 
     get x(): number {

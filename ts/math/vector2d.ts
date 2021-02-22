@@ -4,8 +4,8 @@ export class vector2d {
     constructor();
     constructor( x: number, y: number);
     constructor( x?: number, y?: number) {
-        this._values[0] = x || 0;
-        this._values[1] = y || 0;
+        this._values[0] = x;
+        this._values[1] = y;
     }
     
     get x(): number {

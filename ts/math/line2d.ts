@@ -1,5 +1,6 @@
-import { vector2d } from "./vector2d"
 import { inBetween } from "./misc"
+import { vector2d } from "./vector2d"
+import { matrix2d } from "./matrix2d";
 
 export class line2d {
     private _values = new Float32Array(4);
@@ -90,19 +91,30 @@ export class line2d {
 
     // return 'NaN' if it's a veritical line
     // which means it has an infinite slope
-    public get slop() {
+    public get slope() {
         if(this.dx == 0) {
             return Number.NaN;
         }
         return this.dy/this.dx;
     }
 
+    public normalize(): void {
+        if(this.x0 > this.x1) {
+            [this.x0, this.x1] = [this.x1, this.x0];
+        }
+
+        if(this.y0 > this.y1) {
+            [this.y0, this.y1] = [this.y1, this.y0];
+        }
+    }
+
     // test if two lines have an intersection point
     public intersect(line: line2d): [boolean, vector2d] {
-        return this.intersectV1(line);
+        return this.intersectV2(line);
     }
 
     // method 1
+    // use point-slope form to solve equations
     protected intersectV1(line: line2d): [boolean, vector2d] {
         /*
          * use equation to solve this problem
@@ -149,18 +161,18 @@ export class line2d {
          let vct   = new vector2d();
              vct.x = Number.NaN;
              vct.y = Number.NaN;
-        if(this.slop == Number.NaN || line.slop == Number.NaN) {
-            if(this.slop != Number.NaN) {
-                 return line2d.intersectNV(this, line);
+        if(this.slope == Number.NaN || line.slope == Number.NaN) {
+            if(this.slope != Number.NaN) {
+               return line2d.intersectNV(this, line);
             }
 
-            if(line.slop != Number.NaN) {
+            if(line.slope != Number.NaN) {
                return line2d.intersectNV(line, this);
             }
 
             // two vertical lines
             if(inBetween(this.y0, line.y0, line.y1) ||
-                inBetween(this.y1, line.y0, line.y1)) {
+               inBetween(this.y1, line.y0, line.y1)) {
                // infinite intersection point
                return [true, vct];
             }
@@ -168,7 +180,7 @@ export class line2d {
             return [false, null];
         }
 
-        if((this.slop - line.slop) < 0x0001) {
+        if(Math.abs(this.slope - line.slope) < 0x0001) {
             // might be parallel lines
             // how do I know if two parallel lines are the same
             // we can use y-intercept form to detect if they have same
@@ -177,8 +189,8 @@ export class line2d {
             // from y = m0(x - x0) + y0 to y = m*x + b
             // m*x - m*x0 + y0 = m*x + b
             // b = y0 - m*x0
-            let b0 = this.y0 - this.slop*this.x0;
-            let b1 = line.y0 - line.slop*line.x0;
+            let b0 = this.y0 - this.slope*this.x0;
+            let b1 = line.y0 - line.slope*line.x0;
 
             // they have infinite intersection points 
             // only if b0 == b1 && they have shared 'x' parts
@@ -186,11 +198,12 @@ export class line2d {
         }
 
         //  x = (m0*x0 - m1*x1 + y1 - y0)/(m0-m1)
-        let x = (this.slop * this.x0 - 
-                 line.slop*line.x0    -
-                 this.y0 + line.y0) / (this.slop - line.slop);
+        let x = (this.slope * this.x0 - 
+                 line.slope * line.x0 -
+                 this.y0 + line.y0) / (this.slope - line.slope);
+
         //  y = m0(x - x0) + y0
-        let y = this.slop * (x - this.x0) + this.y0;
+        let y = this.slope * (x - this.x0) + this.y0;
 
         if( inBetween(x, this.x0, this.x1) ) {
             return [true, new vector2d(x, y)];
@@ -202,16 +215,68 @@ export class line2d {
 
     // one is normal line, other is vertical line
     protected static intersectNV(lnn:line2d, lnv:line2d): [boolean, vector2d] { 
-        let xmin = Math.min(lnn.x0, lnn.x1);
-        let xmax = Math.max(lnn.x0, lnn.x1);
 
         if(inBetween(lnv.x0, lnn.x0, lnn.x1) ) {
-            let y0 = lnv.x0 * lnn.slop;
+            let y0 = lnv.x0 * lnn.slope;
             if(inBetween(y0, lnn.y0, lnn.y1)) {
                 return [true, new vector2d(lnv.x0, y0)];
             }
         }
         // no intersection
         return [false, null];
+    }
+
+    protected intersectV2(line: line2d): [boolean, vector2d] {
+        // line1: this.x0, this.y0, this.x1, this.y1
+        // line2: line.x0, line.y0, line.x1, line.y1
+
+        // from 'point-slope form' to 'general form':
+        // y-y0=m(x-x0)
+        // y-y0=mx-mx0
+        // mx-y=mx0-y0
+        // a = m, b = -1, c = mx0-y0
+
+        // Ax = c
+        // matrix A:
+        // | m1 -1 |
+        // | m2 -1 |
+
+        // vector c:
+        // | c1 |
+        // | c2 |
+
+        // matrix B1
+        // | c1 -1 |
+        // | c2 -1 |
+        
+        // matrix B2
+        // | m1 c1 |
+        // | m2 c2 |
+
+        // by cramer's rule
+        // x = det(B1)/detA
+        // y = det(B2)/detA
+        let mA  = new matrix2d([this.slope, -1, line.slope, -1]);
+        let vct = new vector2d();
+        vct.x = Number.NaN;
+        vct.y = Number.NaN;
+        let detA = mA.determinant();
+        if(detA == 0) {
+            return [false, vct];
+        }
+        let mB1 = mA.copy();
+        let mB2 = mA.copy();
+
+        let vC  = [this.slope * this.x0 - this.y0,
+                   line.slope * line.x0 - line.y0];
+
+        mB1.setColumn(1, vC);
+        mB2.setColumn(2, vC);
+        
+        let detB1 = mB1.determinant();
+        let detB2 = mB2.determinant();
+        vct.x = Math.floor(detB1/detA + 0.5);
+        vct.y = Math.floor(detB2/detA + 0.5);
+        return [true, vct];
     }
 }
