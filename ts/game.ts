@@ -79,6 +79,8 @@ export class Game {
             poly.addVertex(-3, 27);
             poly.addVertex(21, 21);
             poly.center = new vector2d(25,25);
+            poly.degree = 0;
+            poly.theta  = Math.random() * 5 - 10;
             let col = new color();
             col.random();
             poly.color = col;
@@ -137,7 +139,8 @@ export class Game {
                     this._polygons[i].velocity.y = 0 - this._polygons[i].velocity.y;
                 }
             }
-            
+
+            this._polygons[i].rotate();
         }
 
     }
@@ -242,8 +245,8 @@ export class Game {
 
         for(let i = 0; i < this._polygons.length; ++i) {
             for(let j = 0; j < this._polygons[i].size-1; ++j) {
-                line.p0 = this._polygons[i].cvertex(j);
-                line.p1 = this._polygons[i].cvertex(j+1);
+                line.p0 = this._polygons[i].rvertex(j);
+                line.p1 = this._polygons[i].rvertex(j+1);
                 line = this._clipper.clip(line);
                 //line.normalize();
                 this._surface.drawLine(
@@ -253,8 +256,8 @@ export class Game {
                 );
             }
             if(this._polygons[i].size >= 2) {
-                line.p0 = this._polygons[i].cvertex(this._polygons[i].size-1);
-                line.p1 = this._polygons[i].cvertex(0);
+                line.p0 = this._polygons[i].rvertex(this._polygons[i].size-1);
+                line.p1 = this._polygons[i].rvertex(0);
                 line = this._clipper.clip(line);
                 //line.normalize();
                 this._surface.drawLine(

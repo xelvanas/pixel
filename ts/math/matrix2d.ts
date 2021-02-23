@@ -1,5 +1,5 @@
 import { inBetween, inRange } from "./misc"
-
+import { vector2d } from "./vector2d"
 export class matrix2d {
     private _values = new Float32Array(4);
 
@@ -146,5 +146,12 @@ export class matrix2d {
 
 
         return new matrix2d([this.m11, this.m21, this.m12, this.m22]);
+    }
+
+    timesVector(v:vector2d): vector2d {
+        return new vector2d(
+            Math.floor(this.m11 * v.x + this.m12 * v.y + 0.5),
+            Math.floor(this.m21 * v.x + this.m22 * v.y + 0.5)
+        );
     }
 }
