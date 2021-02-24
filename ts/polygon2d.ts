@@ -93,11 +93,8 @@ export class polygon2d {
             this._vertices[idx].x,
             this._vertices[idx].y
         ))
-
         vec.x += this._center.x;
         vec.y += this._center.y;
-
-        
         return vec;
     }
 

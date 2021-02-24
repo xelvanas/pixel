@@ -5,6 +5,7 @@ import { rectangle } from "./math/rectangle";
 
 import { ISurface, Surface } from "./surface"
 import { polygon2d } from "./polygon2d"
+import * as trigs from "./math/trigs"
 
 
 export class Game {
@@ -100,9 +101,27 @@ export class Game {
     }
 
     public run() {
+        let s1 = trigs.sin(1.23);
+        let s2 = Math.sin(1.23);
+        let num = this.test(s1, s2);
+        let c1 = trigs.cos(1.23);
+        let c2 = Math.cos(1.23);
+        let c3 = trigs.cos2(1.23);
+
+        num = s1 - s2;
+        num = this.test(c1, c2);
+        num = c1 - c2;
+        num = c1 - c3;
+        s1 += num;
+
+        
         this.update();
         this.draw();
         window.requestAnimationFrame(() => this.run())
+    }
+
+    protected test(x:number, y:number): number {
+        return x + y;
     }
 
     protected update(): void {
